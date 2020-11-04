@@ -2,158 +2,158 @@ import math
 
 
 def deg2rad(deg) -> float:
-    """
+	"""
 	:param deg: angle in degrees
 	:return: angle in radians
 	"""
-    return deg * 0.0174532925199433
+	return deg * 0.0174532925199433
 
 
 def dist(p1: tuple, p2: tuple) -> float:
-    """
+	"""
 	:param p1: first coordinate tuple (point)
 	:param p2: second coordinate tuple (point)
 	:return: distance between both points
 	"""
-    earth_radius = 6371
-    x1 = p1[0]
-    y1 = p1[1]
-    x2 = p2[0]
-    y2 = p2[1]
-    dLat = deg2rad(x2 - x1)
-    dLng = deg2rad(y2 - y1)
-    lat1 = deg2rad(x1)
-    lat2 = deg2rad(x2)
-    a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.sin(dLng / 2) * math.sin(dLng / 2) * math.cos(lat1) * math.cos(
-        lat2)
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return earth_radius * c
+	earth_radius = 6371
+	x1 = p1[0]
+	y1 = p1[1]
+	x2 = p2[0]
+	y2 = p2[1]
+	dLat = deg2rad(x2 - x1)
+	dLng = deg2rad(y2 - y1)
+	lat1 = deg2rad(x1)
+	lat2 = deg2rad(x2)
+	a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.sin(dLng / 2) * math.sin(dLng / 2) * math.cos(lat1) * math.cos(
+		lat2)
+	c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+	return earth_radius * c
 
 
 def time_delta(t1: int, t2: int) -> float:
-    """
+	"""
 	:param t1: first timestamp
 	:param t2: second timestamp
 	:return: time delta
 	"""
-    return (t2 - t1) / 3600000
+	return (t2 - t1) / 3600000
 
 
 def speed(s: float, t: float) -> float:
-    """
+	"""
 	:param s: distance
 	:param t: time
 	:return: speed
 	"""
-    return s / t
+	return s / t
 
 
 class Tour:
-    def __init__(self, data):
-        """
+	def __init__(self, data):
+		"""
 		:param data: Data scraped from tour page as JSON
 		"""
-        self.data = data
-        self.coordinates = [(i['lat'], i['lng']) for i in
-                            data['page']['_embedded']['tour']['_embedded']['coordinates']['items']]
-        self.timestamps = [i['t'] for i in data['page']['_embedded']['tour']['_embedded']['coordinates']['items']]
-        self.altitudes = [i['alt'] for i in data['page']['_embedded']['tour']['_embedded']['coordinates']['items']]
-        self.speed = self.speed()
+		self.data = data
+		self.coordinates = [(i['lat'], i['lng']) for i in
+							data['page']['_embedded']['tour']['_embedded']['coordinates']['items']]
+		self.timestamps = [i['t'] for i in data['page']['_embedded']['tour']['_embedded']['coordinates']['items']]
+		self.altitudes = [i['alt'] for i in data['page']['_embedded']['tour']['_embedded']['coordinates']['items']]
+		self.speed = self.speed()
 
-    def status(self) -> str:
-        """
+	def status(self) -> str:
+		"""
 		:return: Tour is private or public
 		"""
-        return self.data['page']['_embedded']['tour']['status']
+		return self.data['page']['_embedded']['tour']['status']
 
-    def sport(self) -> str:
-        """
+	def sport(self) -> str:
+		"""
 		:return: Type of sport
 		"""
-        return self.data['page']['_embedded']['tour']['sport']
+		return self.data['page']['_embedded']['tour']['sport']
 
-    def roundtrip(self) -> bool:
-        """
+	def roundtrip(self) -> bool:
+		"""
 		:return: Tour was a roundtrip or not
 		"""
-        return True if self.data['page']['_embedded']['tour']['roundtrip'] == "true" else False
+		return True if self.data['page']['_embedded']['tour']['roundtrip'] == "true" else False
 
-    def id(self) -> int:
-        """
+	def id(self) -> int:
+		"""
 		:return: Komoot tour ID
 		"""
-        return self.data['page']['_embedded']['tour']['id']
+		return self.data['page']['_embedded']['tour']['id']
 
-    def type(self) -> str:
-        """
+	def type(self) -> str:
+		"""
 		:return: Type of recorded tour data (planned, done, recorded, ...)
 		"""
-        return self.data['page']['_embedded']['tour']['type']
+		return self.data['page']['_embedded']['tour']['type']
 
-    def name(self) -> str:
-        """
+	def name(self) -> str:
+		"""
 		:return: Title of the tour
 		"""
-        return self.data['page']['_embedded']['tour']['name']
+		return self.data['page']['_embedded']['tour']['name']
 
-    def distance(self) -> float:
-        """
+	def distance(self) -> float:
+		"""
 		:return: Covered distance
 		"""
-        return round(self.data['page']['_embedded']['tour']['distance'] / 1000, 2)
+		return round(self.data['page']['_embedded']['tour']['distance'] / 1000, 2)
 
-    def duration(self) -> int:
-        """
+	def duration(self) -> int:
+		"""
 		:return: Time needed
 		"""
-        return self.data['page']['_embedded']['tour']['duration']
+		return self.data['page']['_embedded']['tour']['duration']
 
-    # TODO: Convert to datetime object
-    def date(self):
-        return self.data['page']['_embedded']['tour']['date']
+	# TODO: Convert to datetime object
+	def date(self):
+		return self.data['page']['_embedded']['tour']['date']
 
-    # TODO: Convert to datetime object
-    def changed_at(self):
-        return self.data['page']['_embedded']['tour']['changed_at']
+	# TODO: Convert to datetime object
+	def changed_at(self):
+		return self.data['page']['_embedded']['tour']['changed_at']
 
-    def kcal_active(self) -> int:
-        """
+	def kcal_active(self) -> int:
+		"""
 		:return: Actively burned calories
 		"""
-        return self.data['page']['_embedded']['tour']['kcal_active']
+		return self.data['page']['_embedded']['tour']['kcal_active']
 
-    def kcal_resting(self) -> int:
-        """
+	def kcal_resting(self) -> int:
+		"""
 		:return: Calories burned during breaks
 		"""
-        return self.data['page']['_embedded']['tour']['kcal_resting']
+		return self.data['page']['_embedded']['tour']['kcal_resting']
 
-    def time_in_motion(self) -> int:
-        """
+	def time_in_motion(self) -> int:
+		"""
 		:return: Time spent in motion
 		"""
-        return self.data['page']['_embedded']['tour']['time_in_motion']
+		return self.data['page']['_embedded']['tour']['time_in_motion']
 
-    def elevation_up(self) -> float:
-        """
+	def elevation_up(self) -> float:
+		"""
 		:return: Positive altitude meters
 		"""
-        return self.data['page']['_embedded']['tour']['elevation_up']
+		return self.data['page']['_embedded']['tour']['elevation_up']
 
-    def elevation_down(self) -> float:
-        """
+	def elevation_down(self) -> float:
+		"""
 		:return: Negative altitude meters
 		"""
-        return self.data['page']['_embedded']['tour']['elevation_down']
+		return self.data['page']['_embedded']['tour']['elevation_down']
 
-    def speed(self):
-        v = []
-        for i in range(1, len(self.coordinates)):
-            p1 = self.coordinates[i - 1]
-            p2 = self.coordinates[i]
-            t1 = self.timestamps[i - 1]
-            t2 = self.timestamps[i]
-            s = dist(p1, p2)
-            t = time_delta(t1, t2)
-            v.append(speed(s, t))
-        return v
+	def speed(self):
+		v = []
+		for i in range(1, len(self.coordinates)):
+			p1 = self.coordinates[i - 1]
+			p2 = self.coordinates[i]
+			t1 = self.timestamps[i - 1]
+			t2 = self.timestamps[i]
+			s = dist(p1, p2)
+			t = time_delta(t1, t2)
+			v.append(speed(s, t))
+		return v

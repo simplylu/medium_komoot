@@ -14,17 +14,17 @@ res = requests.get(login_url)
 cookies = res.cookies.get_dict()
 
 headers = {
-    "Content-Type": "application/json"
+	"Content-Type": "application/json"
 }
 
 payload = json.dumps({
-    "email": email,
-    "password": password,
-    "reason": "null"
+	"email": email,
+	"password": password,
+	"reason": "null"
 })
 
 s.post(login_url, headers=headers,
-       data=payload, cookies=cookies)
+	   data=payload, cookies=cookies)
 
 url = "https://account.komoot.com/actions/transfer?type=signin"
 s.get(url)
@@ -33,15 +33,15 @@ headers = {"onlyprops": "true"}
 
 response = s.get(tour_url, headers=headers)
 if response.status_code != 200:
-    print("Something went wrong...")
-    exit(1)
+	print("Something went wrong...")
+	exit(1)
 data = response.json()
 
 tours = data["kmtx"]["session"]["_embedded"]["profile"]["_embedded"]["tours"]["_embedded"]["items"]
 
 
 for idx in range(len(tours)):
-    print(f"({idx+1}) {tours[idx]['name']}")
+	print(f"({idx+1}) {tours[idx]['name']}")
 
 
 tour_nr = int(input("Tour ID: "))
