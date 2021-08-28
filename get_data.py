@@ -23,8 +23,11 @@ payload = json.dumps({
 	"reason": "null"
 })
 
-s.post(login_url, headers=headers,
-	   data=payload, cookies=cookies)
+s.post(login_url,
+       headers=headers,
+       data=payload,
+       cookies=cookies,
+       )
 
 url = "https://account.komoot.com/actions/transfer?type=signin"
 s.get(url)
@@ -35,21 +38,23 @@ response = s.get(tour_url, headers=headers)
 if response.status_code != 200:
 	print("Something went wrong...")
 	exit(1)
+
 data = response.json()
 
-tours = data["kmtx"]["session"]["_embedded"]["profile"]["_embedded"]["tours"]["_embedded"]["items"]
-
+tours = data["user"]["_embedded"]["tours"]["_embedded"]["items"]
 
 for idx in range(len(tours)):
 	print(f"({idx+1}) {tours[idx]['name']}")
 
-
 tour_nr = int(input("Tour ID: "))
-tour_id = tours[tour_nr-1]['id']
-tour_url = f"https://www.komoot.de/tour/{tour_id}"
+tour_nr -= 1
+tour_url = tours[tour_nr]["_links"]["coordinates"]["href"]
 response = s.get(tour_url, headers=headers)
 tour_data = json.loads(response.text)
 
-T = komoot.Tour(tour_data)
+tour = tours[tour_nr]
+tour['coordinates'] = tour_data
+
+T = komoot.Tour(tour)
 print("Title:", T.name())
 print(f"Duration: {T.duration()}s")
